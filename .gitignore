@@ -1,0 +1,31 @@
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Logs
+logs/
+*.log
+*.sql.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+build/
+.cache/
+.next/
+out/
+
+# Database files (NE PUSHATI NIKAD)
+*.bak
+*.mdf
+*.ndf
+*.ldf
+
+# Docker volumes
+dbdata/
+backup/

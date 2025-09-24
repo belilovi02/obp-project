@@ -1,0 +1,44 @@
+services:
+  db:
+    build: ./db
+    container_name: myapp_db
+    environment:
+      SA_PASSWORD: "Passw0rd!"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./dbdata:/var/opt/mssql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+      - ./backup:/var/opt/mssql/backup
+    command: ["/bin/bash", "-c", "/opt/mssql/bin/sqlservr & /docker-entrypoint-initdb.d/restore.sh"]
+
+
+  server:
+    build:
+      context: ./server
+    container_name: myapp_server
+    environment:
+      PORT: 5000
+      DB_DIALECT: mssql
+      DB_HOST: db
+      DB_PORT: 1433
+      DB_NAME: StackOverflow2013
+      DB_USER: appuser
+      DB_PASS: appuser
+      CORS_ORIGIN: http://localhost:5173
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+
+  client:
+    build:
+      context: ./client
+    container_name: myapp_client
+    environment:
+      VITE_API_URL: http://localhost:5000/api
+    ports:
+      - "5173:5173"
+    depends_on:
+      - server
